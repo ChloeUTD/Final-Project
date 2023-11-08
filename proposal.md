@@ -1,41 +1,46 @@
 # Title
 
 ## Repository
-<Link to your project's public GitHub respository>
+<https://github.com/ChloeUTD/Final-Project.git>
 
 ## Description
-1-2 sentence description of what it will do and how it relevant to media and digital arts.
+Infinite auto runner where you must avoid obstacles by either jumping, sliding, or attacking. 
+Combines art and code to make a playable and visually appealing game
 
 ## Features
-- Feature 1
-	- Short explaination of how it will be executed.
-- Feature 2
-	- Short explaination of how it will be executed.
-- Feature N 
-	- Short explaination of how it will be executed.
+- Random Obstacle Generation
+	- Add obstacles to a list, every given interval a random object will be selected 
+    and generate. Interval is shortened the longer you play
+- Animated characters
+	- Create a function that splits sprite sheets and returns animation that changes
+    based upon framerate given to function
+- Auto "Running"
+	- Have obstacles slide towards the player while running animation is playing. Player
+    only moves vertically, but the animation gives the illusion of moving
 
 ## Challenges
-- Short sentence of any skill or topic that needs to be learnt or researched.
-- Short sentence of any skill or topic that needs to be learnt or researched.
-- Short sentence of any skill or topic that needs to be learnt or researched.
+- Creating a function that can dynamically split spritesheets into different frames
+- Managing lists of objects that need to be deleted, especially once the level gets faster
+- Working with hitboxes so the timing of player input does not feel to easy or hard
 
 ## Outcomes
 Ideal Outcome:
-- Briefly describe what is the ideal outcome?
+- The basic features are implemented, and I get extra time to add animations for 
+when the player destroys the obstacles. 
 
 Minimal Viable Outcome:
-- Briefly describe the bare essential for a good working outcome?
+- The game responds to user input so that it is able to function
 
 ## Milestones
 
 - Week 1
-  1. Goal 1
-  2. Goal 2
+  1. Implement obstacle class + handling
+  2. Implement User input
 
 - Week 2
-  1. Goal 1
-  2. Goal 2
+  1. Implement animation function
+  2. Implement distance counter
 
 - Week N (Final)
-  1. Goal 1
-  2. Goal 2
+  1. Implement obstacle destruction animation
+  2. Implement menu screen

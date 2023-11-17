@@ -6,10 +6,11 @@ import pygame
     #FOR WHEN YOU WAKE UP: Check out pygame documentation on sprites, create obstacle library, implement running bool
  # Week 2: Implement distance counter and animation function
  # Week 3: Implement obstacle destruction animation and menu
+ 
 
 def main():
     #Runs game from here
-    error_prevent = 1
+    
     #Initialize Loop
     pygame.init()
     ##Screen and Display
@@ -20,18 +21,19 @@ def main():
     running = True
     clock = pygame.time.Clock()
     ##Images
-    background = pygame.image.load("forest.png")
+    background = pygame.image.load('forest.png')
+    
 
     #Game Loop
     while running == True:
-         for event in pygame.event.get():
-              if event.type == pygame.QUIT:
-                   running = False
-    #Render and Display
-    screen.fill(color="black")
-    pygame.display.flip()
-    screen.blit(background)
-    clock.tick(24)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        #Render and Display
+        pygame.display.flip()
+        screen.fill(color="black")
+        screen.blit(background, (100, 100))
+        clock.tick(24)
 
 
 if __name__ == "__main__":

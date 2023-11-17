@@ -1,4 +1,5 @@
 import pygame
+import objects
 
 #TODO: Complete tasks within week timeframe
  # Week 1: Implement user input and basic gameplay
@@ -8,11 +9,11 @@ import pygame
  # Week 3: Implement obstacle destruction animation and menu
  
 class Player(pygame.sprite.Sprite):
-    def __init__(self, img, x, y):
+    def __init__(self, img):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(img)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        
 
 def main():
     #Runs game from here
@@ -28,7 +29,8 @@ def main():
     clock = pygame.time.Clock()
     ##Images
     background = pygame.image.load("forest.png")
-    player = Player("marten.png", 200, 200)
+    player = Player("marten.png")
+    bush = objects.Bush("bush.png")
     
 
     #Game Loop
@@ -41,6 +43,7 @@ def main():
         screen.fill(color="black")
         screen.blit(background, (0, 0))
         screen.blit(player.image, (100, 455))
+        screen.blit(bush.image, (500, 544))
         clock.tick(24)
 
 

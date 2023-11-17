@@ -7,6 +7,12 @@ import pygame
  # Week 2: Implement distance counter and animation function
  # Week 3: Implement obstacle destruction animation and menu
  
+class Player(pygame.sprite.Sprite):
+    def __init__(self, img, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(img)
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
 
 def main():
     #Runs game from here
@@ -21,7 +27,8 @@ def main():
     running = True
     clock = pygame.time.Clock()
     ##Images
-    background = pygame.image.load('forest.png')
+    background = pygame.image.load("forest.png")
+    player = Player("marten.png", 200, 200)
     
 
     #Game Loop
@@ -32,7 +39,8 @@ def main():
         #Render and Display
         pygame.display.flip()
         screen.fill(color="black")
-        screen.blit(background, (100, 100))
+        screen.blit(background, (0, 0))
+        screen.blit(player.image, (100, 455))
         clock.tick(24)
 
 

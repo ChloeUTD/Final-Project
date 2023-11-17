@@ -18,6 +18,9 @@ def main():
     screen = pygame.display.set_mode(resolution)
     ##System
     running = True
+    clock = pygame.time.Clock()
+    ##Images
+    background = pygame.image.load("forest.png")
 
     #Game Loop
     while running == True:
@@ -26,6 +29,10 @@ def main():
                    running = False
     #Render and Display
     screen.fill(color="black")
+    pygame.display.flip()
+    screen.blit(background)
+    clock.tick(24)
+
 
 if __name__ == "__main__":
      main()

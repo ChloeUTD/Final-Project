@@ -1,5 +1,6 @@
 import pygame
 import objects
+import random
 
 #TODO: Complete tasks within week timeframe
  # Week 1: Implement user input and basic gameplay
@@ -11,14 +12,14 @@ import objects
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.alive = False #Checks if player collided with anything
-        self.animation_list = self._frame_loader()
-        self.frame_num = 0
-        self.img = self.animation_list[self.frame_num]
-        self.rect = self.img.get_rect()
-        self.rect.y = y
-        self.rect.x = x
-        self.anim_cooldown = 1
+        self.alive = True #Checks if player collided with anything
+        self.animation_list = self._frame_loader() #Uses frame loader to get list of images
+        self.frame_num = 0 #Where in animation list img currently is
+        self.img = self.animation_list[self.frame_num] #Displays current frame
+        self.rect = self.img.get_rect() #Grabs rectangle from img
+        self.rect.y = y #y position
+        self.rect.x = x #x position (not actually that important)
+        self.anim_cooldown = 1 #Makes frame change once every other second
 
     def _frame_loader(self):
         running_anim = 8
@@ -28,8 +29,6 @@ class Player(pygame.sprite.Sprite):
 
          
         return animation_list    
-
-        
 
     def update(self):
         if self.anim_cooldown != 0:
@@ -42,12 +41,33 @@ class Player(pygame.sprite.Sprite):
             self.anim_cooldown = 1    
  
         self.img = self.animation_list[self.frame_num]
-        #self.rect = self.img.get_rect(center=(self.rect.y, self.rect.x))
+        
+
+class ObstacleManager():
+    def __init__(self):
+        self.countdown = 120
+        self.bush_list = []
+        self.web_list = []
+        self.lumberjack_list = []
+        
+    def update(self, dt):
+        self.spawner()
+       
+    
+    # New idea: Just have a countdown that counts down from 120 so it spawns every frame, when it hits zero it spawns YIPEE THIS ONE WORKS
+    def spawner(self):
+        
+        if self.countdown < 0:
+            obstacle_type = 1
+            if obstacle_type == 1:
+                self.bush_list.append(objects.Bush("bush.png"))
+                self.countdown = 120
+                obstacle_type = 0
+        else:
+            self.countdown -= 1        
 
 
             
-
-
 
 
         
@@ -67,13 +87,14 @@ def main():
     ##Images
     background = pygame.image.load("forest.png")
     player = Player(0, 487)
-    bush = objects.Bush("bush.png")
+    
     web = objects.Web("web.png")
     lumberjack = objects.Lumberjack("lumberjack.png")
     ##Mechanics
     jumping = False
     y_velocity = 15
     on_ground = True
+    manager = ObstacleManager()
 
     #Game Loop
     while running == True:
@@ -106,14 +127,23 @@ def main():
                 y_velocity = 15
                 player.rect.y = 487
 
-        #Render and Display
+        ##Obstacle spawning
+        manager.update(dt)
+        if len(manager.bush_list) != 0:
+            for x in manager.bush_list:
+                screen.blit(x.image, x.pos)
+                x.update()
+
+        ##Render and Display
         pygame.display.flip()
         screen.fill(color="black")
         screen.blit(background, (0, 0))
-        screen.blit(player.img, player.rect)
+        if player.alive:
+            player.update()
+            screen.blit(player.img, player.rect)
         screen.blit(web.image, web.pos)
         web.update()
-        player.update()
+        
         dt = clock.tick(24)
 
 

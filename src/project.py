@@ -27,18 +27,23 @@ class Player(pygame.sprite.Sprite):
         for x in range(running_anim):
             animation_list.append(pygame.image.load(f"fp_run_{x}.png"))
 
-         
+        animation_list.append(pygame.image.load("fp_slide_1.png"))    
+
         return animation_list    
 
-    def update(self):
-        if self.anim_cooldown != 0:
-            self.anim_cooldown -= 1
-        else: 
-            if self.frame_num < 7:
-                self.frame_num += 1
-            else:
-                self.frame_num = 0
-            self.anim_cooldown = 1    
+    def update(self, sld, jmp):
+        sliding = sld
+        if sliding:
+            self.frame_num = 8
+        else:    
+            if self.anim_cooldown != 0:
+                self.anim_cooldown -= 1
+            else: 
+                if self.frame_num < 7:
+                    self.frame_num += 1
+                else:
+                    self.frame_num = 0
+                self.anim_cooldown = 1    
  
         self.img = self.animation_list[self.frame_num]
         
@@ -58,7 +63,7 @@ class ObstacleManager():
     def spawner(self):
         
         if self.countdown < 0:
-            obstacle_type = random.randrange(1, 3)
+            obstacle_type = random.randrange(1, 4)
             if obstacle_type == 1:
                 self.bush_list.append(objects.Bush("bush.png"))
                 self.countdown = 120
@@ -92,14 +97,14 @@ def main():
     running = True
     clock = pygame.time.Clock()
     dt = 0
+    
     ##Images
     background = pygame.image.load("forest.png")
     player = Player(0, 487)
-    
-    web = objects.Web("web.png")
-    lumberjack = objects.Lumberjack("lumberjack.png")
     ##Mechanics
     jumping = False
+    sliding = False
+    cooldown = 96
     y_velocity = 15
     on_ground = True
     manager = ObstacleManager()
@@ -125,8 +130,21 @@ def main():
         if keys[pygame.K_UP]:
             jumping = True
 
+        if keys[pygame.K_DOWN]:
+            sliding = True
+        ##Player actions
+        if sliding:
+            if cooldown != 0:
+                cooldown -= 1
+                jumping = False
+                player.rect.y = 654
+            else:
+                sliding = False
+                cooldown = 96
+                player.rect.y = 486        
+
         if jumping:
-            player.rect.y -= y_velocity
+            player.rect.y -= y_velocity * 1.5
             if y_velocity != -15:
                 y_velocity -= 0.25
 
@@ -135,6 +153,8 @@ def main():
                 y_velocity = 15
                 player.rect.y = 487
 
+        
+            
         ##Obstacle spawning
         manager.update(dt)
         if len(manager.bush_list) != 0:
@@ -150,17 +170,17 @@ def main():
         if len(manager.lumberjack_list) != 0:
             for x in manager.lumberjack_list:
                 screen.blit(x.image, x.pos)
-                x.update()        
+                x.update()
 
         ##Render and Display
         pygame.display.flip()
         screen.fill(color="black")
         screen.blit(background, (0, 0))
         if player.alive:
-            player.update()
+            player.update(sliding, jumping)
             screen.blit(player.img, player.rect)
-        screen.blit(web.image, web.pos)
-        web.update()
+        
+        
         
         dt = clock.tick(24)
 

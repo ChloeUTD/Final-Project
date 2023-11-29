@@ -58,9 +58,17 @@ class ObstacleManager():
     def spawner(self):
         
         if self.countdown < 0:
-            obstacle_type = 1
+            obstacle_type = random.randrange(1, 3)
             if obstacle_type == 1:
                 self.bush_list.append(objects.Bush("bush.png"))
+                self.countdown = 120
+                obstacle_type = 0
+            elif obstacle_type == 2:
+                self.web_list.append(objects.Web("web.png"))
+                self.countdown = 120
+                obstacle_type = 0
+            else:
+                self.lumberjack_list.append(objects.Lumberjack("lumberjack.png"))
                 self.countdown = 120
                 obstacle_type = 0
         else:
@@ -133,6 +141,16 @@ def main():
             for x in manager.bush_list:
                 screen.blit(x.image, x.pos)
                 x.update()
+
+        if len(manager.web_list) != 0:
+            for x in manager.web_list:
+                screen.blit(x.image, x.pos)
+                x.update()
+
+        if len(manager.lumberjack_list) != 0:
+            for x in manager.lumberjack_list:
+                screen.blit(x.image, x.pos)
+                x.update()        
 
         ##Render and Display
         pygame.display.flip()

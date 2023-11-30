@@ -184,11 +184,16 @@ def main():
             for x in manager.bush_list:
                 screen.blit(x.image, x.pos)
                 x.update()
+                if x.rect.right < 0:
+                    manager.bush_list.pop(manager.bush_list.index(x))
+                
 
         if len(manager.web_list) != 0:
             for x in manager.web_list:
                 screen.blit(x.image, x.pos)
                 x.update()
+                if x.rect.right < 0:
+                    manager.web_list.pop(manager.web_list.index(x))
 
         if len(manager.lumberjack_list) != 0:
             for x in manager.lumberjack_list:
@@ -196,6 +201,8 @@ def main():
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
                 screen.blit(x.image, x.pos)
                 x.update()
+                if x.rect.right < 0:
+                    manager.lumberjack_list.pop(manager.lumberjack_list.index(x))
 
         ##Render and Display
         pygame.display.flip()

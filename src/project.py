@@ -27,14 +27,19 @@ class Player(pygame.sprite.Sprite):
         for x in range(running_anim):
             animation_list.append(pygame.image.load(f"fp_run_{x}.png"))
 
-        animation_list.append(pygame.image.load("fp_slide_1.png"))    
+        animation_list.append(pygame.image.load("fp_slide_1.png"))
+        animation_list.append(pygame.image.load("fp_slash_1.png")) 
 
         return animation_list    
 
-    def update(self, sld, jmp):
+    def update(self, sld, jmp, slsh):
         sliding = sld
+        jumping = jmp
+        slashing = slsh
         if sliding:
             self.frame_num = 8
+        elif slashing:
+            self.frame_num = 9    
         else:    
             if self.anim_cooldown != 0:
                 self.anim_cooldown -= 1
@@ -97,14 +102,18 @@ def main():
     running = True
     clock = pygame.time.Clock()
     dt = 0
-    
+    hitbox = pygame.Surface((100, 100))
+    hb_pos = (500, 433)
+    hb_rect = hitbox.get_rect()
     ##Images
     background = pygame.image.load("forest.png")
     player = Player(0, 487)
     ##Mechanics
     jumping = False
     sliding = False
-    cooldown = 96
+    slashing = False
+    sld_cooldown = 96
+    slsh_cooldown = 24
     y_velocity = 15
     on_ground = True
     manager = ObstacleManager()
@@ -132,15 +141,18 @@ def main():
 
         if keys[pygame.K_DOWN]:
             sliding = True
+
+        if keys[pygame.K_RIGHT]:
+            slashing = True
         ##Player actions
         if sliding:
-            if cooldown != 0:
-                cooldown -= 1
+            if sld_cooldown != 0:
+                sld_cooldown -= 1
                 jumping = False
                 player.rect.y = 654
             else:
                 sliding = False
-                cooldown = 96
+                sld_cooldown = 96
                 player.rect.y = 486        
 
         if jumping:
@@ -152,6 +164,17 @@ def main():
                 jumping = False    
                 y_velocity = 15
                 player.rect.y = 487
+
+        if slashing:
+            if slsh_cooldown != 0:
+                slsh_cooldown -= 1
+                hitbox.fill("Red")
+                player.rect.y = 409
+            else:
+                slashing = False
+                slsh_cooldown = 24
+                hitbox.fill("Black")
+                player.rect.y = 486 
 
         
             
@@ -169,6 +192,8 @@ def main():
 
         if len(manager.lumberjack_list) != 0:
             for x in manager.lumberjack_list:
+                if pygame.Rect.colliderect(x.rect, hb_rect) and slashing:
+                    manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
                 screen.blit(x.image, x.pos)
                 x.update()
 
@@ -177,8 +202,9 @@ def main():
         screen.fill(color="black")
         screen.blit(background, (0, 0))
         if player.alive:
-            player.update(sliding, jumping)
+            player.update(sliding, jumping, slashing)
             screen.blit(player.img, player.rect)
+            screen.blit(hitbox, hb_pos)
         
         
         

@@ -70,15 +70,15 @@ class ObstacleManager():
         if self.countdown < 0:
             obstacle_type = random.randrange(1, 4)
             if obstacle_type == 1:
-                self.bush_list.append(objects.Bush("bush.png"))
+                self.bush_list.append(objects.Bush("fp_bush.png"))
                 self.countdown = 120
                 obstacle_type = 0
             elif obstacle_type == 2:
-                self.web_list.append(objects.Web("web.png"))
+                self.web_list.append(objects.Web("fp_web.png"))
                 self.countdown = 120
                 obstacle_type = 0
             else:
-                self.lumberjack_list.append(objects.Lumberjack("lumberjack.png"))
+                self.lumberjack_list.append(objects.Lumberjack("fp_lumberjack_1.png"))
                 self.countdown = 120
                 obstacle_type = 0
         else:
@@ -183,6 +183,8 @@ def main():
         if len(manager.bush_list) != 0:
             for x in manager.bush_list:
                 screen.blit(x.image, x.pos)
+             #   if pygame.Rect.colliderect(x.rect, player.rect):
+              #      player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.bush_list.pop(manager.bush_list.index(x))
@@ -191,6 +193,8 @@ def main():
         if len(manager.web_list) != 0:
             for x in manager.web_list:
                 screen.blit(x.image, x.pos)
+              #  if pygame.Rect.colliderect(x.rect, player.rect):
+             #       player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.web_list.pop(manager.web_list.index(x))
@@ -200,6 +204,8 @@ def main():
                 if pygame.Rect.colliderect(x.rect, hb_rect) and slashing:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
                 screen.blit(x.image, x.pos)
+             #   if pygame.Rect.colliderect(x.rect, player.rect):
+            #        player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x))

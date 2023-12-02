@@ -17,6 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.frame_num = 0 #Where in animation list img currently is
         self.img = self.animation_list[self.frame_num] #Displays current frame
         self.rect = self.img.get_rect() #Grabs rectangle from img
+        self.mask = pygame.mask.from_surface(self.img)
+        self.mask_img = self.mask.to_surface() #This is really just for debug purposes
         self.rect.y = y #y position
         self.rect.x = x #x position (not actually that important)
         self.anim_cooldown = 1 #Makes frame change once every other second
@@ -25,10 +27,10 @@ class Player(pygame.sprite.Sprite):
         running_anim = 8
         animation_list = []
         for x in range(running_anim):
-            animation_list.append(pygame.image.load(f"fp_run_{x}.png"))
+            animation_list.append(pygame.image.load(f"fp_run_{x}.png").convert_alpha())
 
-        animation_list.append(pygame.image.load("fp_slide_1.png"))
-        animation_list.append(pygame.image.load("fp_slash_1.png")) 
+        animation_list.append(pygame.image.load("fp_slide_1.png").convert_alpha())
+        animation_list.append(pygame.image.load("fp_slash_1.png").convert_alpha()) 
 
         return animation_list    
 
@@ -51,6 +53,9 @@ class Player(pygame.sprite.Sprite):
                 self.anim_cooldown = 1    
  
         self.img = self.animation_list[self.frame_num]
+        self.mask = pygame.mask.from_surface(self.img)
+        self.mask_img = self.mask.to_surface()
+        
         
 
 class ObstacleManager():
@@ -183,8 +188,10 @@ def main():
         if len(manager.bush_list) != 0:
             for x in manager.bush_list:
                 screen.blit(x.image, x.pos)
-             #   if pygame.Rect.colliderect(x.rect, player.rect):
-              #      player.alive = False
+                #screen.blit(x.mask_img, x.pos)
+                #THIS WORKS
+                if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
+                    player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.bush_list.pop(manager.bush_list.index(x))
@@ -193,8 +200,8 @@ def main():
         if len(manager.web_list) != 0:
             for x in manager.web_list:
                 screen.blit(x.image, x.pos)
-              #  if pygame.Rect.colliderect(x.rect, player.rect):
-             #       player.alive = False
+                if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
+                    player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.web_list.pop(manager.web_list.index(x))
@@ -204,8 +211,8 @@ def main():
                 if pygame.Rect.colliderect(x.rect, hb_rect) and slashing:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
                 screen.blit(x.image, x.pos)
-             #   if pygame.Rect.colliderect(x.rect, player.rect):
-            #        player.alive = False
+                if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
+                    player.alive = False
                 x.update()
                 if x.rect.right < 0:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x))
@@ -217,7 +224,9 @@ def main():
         if player.alive:
             player.update(sliding, jumping, slashing)
             screen.blit(player.img, player.rect)
-            screen.blit(hitbox, hb_pos)
+            #screen.blit(player.mask_img, player.rect)
+            #screen.blit(hitbox, hb_pos)
+        
         
         
         

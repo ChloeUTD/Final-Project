@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.anim_cooldown = 1 #Makes frame change once every other second
 
     def _frame_loader(self):
+        #Anim list guide: frames 0-7 running, frame 8 slide, frame 9 slash
         running_anim = 8
         animation_list = []
         for x in range(running_anim):
@@ -92,8 +93,6 @@ class ObstacleManager():
 
             
 
-
-        
 def main():
     #Runs game from here
     
@@ -113,6 +112,13 @@ def main():
     ##Images
     background = pygame.image.load("forest.png")
     player = Player(0, 487)
+    slash_list = []
+    mask_list = []
+    slash_pos = (450, 400)
+    for x in range(8):
+        slash_list.append(pygame.image.load(f"fp_slash_bar_{x}.png").convert_alpha())
+        mask_list.append(pygame.mask.from_surface(slash_list[x]))
+    frame_num = 0
     ##Mechanics
     jumping = False
     sliding = False
@@ -208,7 +214,7 @@ def main():
 
         if len(manager.lumberjack_list) != 0:
             for x in manager.lumberjack_list:
-                if pygame.Rect.colliderect(x.rect, hb_rect) and slashing:
+                if mask_list[frame_num].overlap(x.mask, (x.pos[0] - slash_pos[0], x.pos[1] - slash_pos[1])) and slashing:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
                 screen.blit(x.image, x.pos)
                 if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
@@ -217,6 +223,12 @@ def main():
                 if x.rect.right < 0:
                     manager.lumberjack_list.pop(manager.lumberjack_list.index(x))
 
+        if player.anim_cooldown == 0:
+            if frame_num < 7:
+                frame_num += 1    
+            else:
+                frame_num = 0             
+
         ##Render and Display
         pygame.display.flip()
         screen.fill(color="black")
@@ -224,12 +236,8 @@ def main():
         if player.alive:
             player.update(sliding, jumping, slashing)
             screen.blit(player.img, player.rect)
-            #screen.blit(player.mask_img, player.rect)
-            #screen.blit(hitbox, hb_pos)
-        
-        
-        
-        
+            screen.blit(slash_list[frame_num], slash_pos)
+               
         dt = clock.tick(24)
 
 

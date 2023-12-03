@@ -9,11 +9,15 @@ def main():
     running = True
     clock = pygame.time.Clock()
     dt = 0
-    player = pygame.image.load("marten.png")
+    player = pygame.image.load("fp_run_0.png").convert_alpha()
     player_rect = player.get_rect()
+    #Relevant code
+    player_mask = pygame.mask.from_surface(player)
+    mask_image = player_mask.to_surface()
+    
     player_rect.x = 100
     player_rect.y = 455
-    #Relevant code
+    
     jumping = False
     y_velocity = 15
     on_ground = True
@@ -51,7 +55,8 @@ def main():
 
         pygame.display.flip()
         screen.fill(color="black")
-        screen.blit(player, player_rect)        
+        screen.blit(player, player_rect)
+        screen.blit(mask_image, (player_rect.x,player_rect.y))     
         dt = clock.tick(24)            
         
 

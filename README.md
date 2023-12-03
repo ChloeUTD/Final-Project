@@ -1,7 +1,7 @@
 # The Pine's Blade
 
 ## Demo
-Demo Video: <>
+Demo Video: <https://youtu.be/aHsE2FjMz2w>
 
 ## Github Repository:
 Github Repo: <https://github.com/ChloeUTD/Final-Project.git>

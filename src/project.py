@@ -123,7 +123,7 @@ def main():
     hb_pos = (500, 433)
     hb_rect = hitbox.get_rect()
     ##Images
-    background = pygame.image.load("forest.png")
+    end_screen = pygame.image.load("fp_end_screen.png")
     player = Player(0, 487)
     slash_list = []
     mask_list = []
@@ -216,7 +216,8 @@ def main():
         manager.update(dt)
         if len(manager.bush_list) != 0:
             for x in manager.bush_list:
-                screen.blit(x.image, x.pos)
+                if player.alive:
+                    screen.blit(x.image, x.pos)
                 
                 #THIS WORKS
                 if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
@@ -228,7 +229,8 @@ def main():
 
         if len(manager.web_list) != 0:
             for x in manager.web_list:
-                screen.blit(x.image, x.pos)
+                if player.alive:
+                    screen.blit(x.image, x.pos)
                 if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
                     player.alive = False
                 x.update()
@@ -238,8 +240,9 @@ def main():
         if len(manager.lumberjack_list) != 0:
             for x in manager.lumberjack_list:
                 if mask_list[frame_num].overlap(x.mask, (x.pos[0] - slash_pos[0], x.pos[1] - slash_pos[1])) and slashing:
-                    manager.lumberjack_list.pop(manager.lumberjack_list.index(x)) #start here
-                screen.blit(x.image, x.pos)
+                    manager.lumberjack_list.pop(manager.lumberjack_list.index(x))
+                if player.alive:     
+                    screen.blit(x.image, x.pos)
                 if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
                     player.alive = False
                 x.update()
@@ -255,8 +258,7 @@ def main():
         ##Render and Display
         pygame.display.flip()
         screen.fill(color="black")
-        #screen.blit(background, (0, 0))
-
+       
         screen.blit(back[0], back_rect[0])
         for x in mid_rect:
             if x.right == 1000:
@@ -279,6 +281,8 @@ def main():
             player.update(sliding, jumping, slashing, y_velocity)
             screen.blit(player.img, player.rect)
             screen.blit(slash_list[frame_num], slash_pos)
+        else:
+            screen.blit(end_screen, (0, 0))    
                
         dt = clock.tick(24)
 

@@ -24,25 +24,38 @@ class Player(pygame.sprite.Sprite):
         self.anim_cooldown = 1 #Makes frame change once every other second
 
     def _frame_loader(self):
-        #Anim list guide: frames 0-7 running, frame 8 slide, frame 9 slash
+        #Anim list guide: frames 0-7 running, frame 8 slide, frame 9 slash, frame 10 - 13 jumping 
         running_anim = 8
+        jump_anim = 1
         animation_list = []
         for x in range(running_anim):
             animation_list.append(pygame.image.load(f"fp_run_{x}.png").convert_alpha())
 
         animation_list.append(pygame.image.load("fp_slide_1.png").convert_alpha())
-        animation_list.append(pygame.image.load("fp_slash_1.png").convert_alpha()) 
+        animation_list.append(pygame.image.load("fp_slash_1.png").convert_alpha())
+        for x in range(10, 14):
+            animation_list.append(pygame.image.load(f"fp_jump_{jump_anim}.png").convert_alpha())
+            jump_anim += 1
 
         return animation_list    
 
-    def update(self, sld, jmp, slsh):
+    def update(self, sld, jmp, slsh, y_vel):
         sliding = sld
         jumping = jmp
         slashing = slsh
         if sliding:
             self.frame_num = 8
         elif slashing:
-            self.frame_num = 9    
+            self.frame_num = 9  
+        elif jumping:
+            if y_vel > 5:
+                self.frame_num = 10
+            elif y_vel > 0 and y_vel <= 5:
+                self.frame_num = 11
+            elif y_vel > -5 and y_vel <= 0:
+                self.frame_num = 12
+            else:
+                self.frame_num = 13            
         else:    
             if self.anim_cooldown != 0:
                 self.anim_cooldown -= 1
@@ -194,7 +207,7 @@ def main():
         if len(manager.bush_list) != 0:
             for x in manager.bush_list:
                 screen.blit(x.image, x.pos)
-                #screen.blit(x.mask_img, x.pos)
+                
                 #THIS WORKS
                 if player.mask.overlap(x.mask, (x.pos[0] - player.rect.x, x.pos[1] - player.rect.y)):
                     player.alive = False
@@ -234,7 +247,7 @@ def main():
         screen.fill(color="black")
         screen.blit(background, (0, 0))
         if player.alive:
-            player.update(sliding, jumping, slashing)
+            player.update(sliding, jumping, slashing, y_velocity)
             screen.blit(player.img, player.rect)
             screen.blit(slash_list[frame_num], slash_pos)
                

@@ -103,7 +103,7 @@ class ObstacleManager():
         else:
             self.countdown -= 1        
 
-
+        
             
 
 def main():
@@ -132,6 +132,16 @@ def main():
         slash_list.append(pygame.image.load(f"fp_slash_bar_{x}.png").convert_alpha())
         mask_list.append(pygame.mask.from_surface(slash_list[x]))
     frame_num = 0
+    ##Parallax
+    front = [pygame.image.load("fp_parallax_bg_3.png").convert_alpha()]
+    front_rect = [front[0].get_rect()]
+    mid = [pygame.image.load("fp_parallax_bg_2.png").convert_alpha()]
+    mid_rect = [mid[0].get_rect()]
+    back = [pygame.image.load("fp_parallax_bg_1.png").convert_alpha()]
+    back_rect = [back[0].get_rect()]
+    front_vel = 10
+    mid_vel = 5
+    
     ##Mechanics
     jumping = False
     sliding = False
@@ -245,7 +255,26 @@ def main():
         ##Render and Display
         pygame.display.flip()
         screen.fill(color="black")
-        screen.blit(background, (0, 0))
+        #screen.blit(background, (0, 0))
+
+        screen.blit(back[0], back_rect[0])
+        for x in mid_rect:
+            if x.right == 1000:
+                mid_rect.append(mid[0].get_rect(x=1000, y=0))
+            if x.right <= 0:
+                mid_rect.pop(mid_rect.index(x))   
+            x.x -= mid_vel     
+            screen.blit(mid[0], x)  
+        for x in front_rect:
+            if x.right == 1000:
+                front_rect.append(front[0].get_rect(x=1000, y=0))
+            if x.right <= 0:
+                front_rect.pop(front_rect.index(x))   
+            x.x -= front_vel     
+            screen.blit(front[0], x)
+            
+          
+            
         if player.alive:
             player.update(sliding, jumping, slashing, y_velocity)
             screen.blit(player.img, player.rect)
